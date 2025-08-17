@@ -20,8 +20,8 @@ type ToolType = "brush" | "marker" | "spray" | "eraser";
 type Coordinates = { offsetX: number; offsetY: number };
 
 // Tamaño fijo del canvas
-const CANVAS_WIDTH = 1080;
-const CANVAS_HEIGHT = 720;
+const CANVAS_WIDTH = 854;
+const CANVAS_HEIGHT = 480;
 
 export default function DrawingCanvas() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -230,7 +230,7 @@ export default function DrawingCanvas() {
     if (!canvasRef.current) return;
 
     const link = document.createElement("a");
-    link.download = `dibujo-${new Date()
+    link.download = `paint-${new Date()
       .toISOString()
       .slice(0, 19)
       .replace(/:/g, "-")}.png`;
@@ -240,32 +240,47 @@ export default function DrawingCanvas() {
 
   // Iconos para herramientas
   const tools: { id: ToolType; icon: JSX.Element; label: string }[] = [
-    { id: "brush", icon: <FaPaintBrush size={24} />, label: "Pincel" },
-    { id: "marker", icon: <FaMarker size={24} />, label: "Marcador" },
-    { id: "spray", icon: <FaSprayCan size={24} />, label: "Spray" },
-    { id: "eraser", icon: <FaEraser size={24} />, label: "Borrador" },
+    {
+      id: "brush",
+      icon: <FaPaintBrush size={24} className="text-white" />,
+      label: "Pincel",
+    },
+    {
+      id: "marker",
+      icon: <FaMarker size={24} className="text-white" />,
+      label: "Marcador",
+    },
+    {
+      id: "spray",
+      icon: <FaSprayCan size={24} className="text-white" />,
+      label: "Spray",
+    },
+    {
+      id: "eraser",
+      icon: <FaEraser size={24} className="text-white" />,
+      label: "Borrador",
+    },
   ];
 
   return (
     <div className="flex flex-col items-center p-2 w-full h-full">
       {/* Menú de herramientas responsive */}
-      <div className="flex flex-wrap justify-center gap-2 md:gap-4 mb-4 p-3 bg-gray-100 rounded-lg shadow-md w-full max-w-4xl">
+      <div className="flex flex-wrap justify-center gap-2 md:gap-4 mb-4 p-3 bg-black/50 rounded-lg shadow-md w-full max-w-4xl">
         {/* Selector de herramientas con iconos */}
         <div className="flex flex-wrap gap-1 md:gap-2 justify-center">
           {tools.map((t) => (
             <button
               key={t.id}
               onClick={() => setTool(t.id)}
-              className={`flex flex-col items-center p-2 rounded-lg transition-all
+              className={`p-2 rounded-lg transition-all
                 ${
                   tool === t.id
                     ? "bg-blue-500 text-white shadow-md"
-                    : "bg-white hover:bg-gray-200"
+                    : "bg-transparent hover:bg-gray-200"
                 }`}
               title={t.label}
             >
               <span className="text-xl md:text-2xl">{t.icon}</span>
-              <span className="text-xs mt-1 hidden sm:block">{t.label}</span>
             </button>
           ))}
         </div>
@@ -275,7 +290,9 @@ export default function DrawingCanvas() {
 
         {/* Selector de color */}
         <div className="flex flex-col items-center">
-          <label className="text-xs md:text-sm mb-1 font-medium">Color</label>
+          <label className="text-xs md:text-sm mb-1 font-medium text-white">
+            Color
+          </label>
           <input
             type="color"
             value={color}
@@ -287,7 +304,9 @@ export default function DrawingCanvas() {
 
         {/* Tamaño del trazo */}
         <div className="flex flex-col items-center">
-          <label className="text-xs md:text-sm mb-1 font-medium">Tamaño</label>
+          <label className="text-xs md:text-sm mb-1 font-medium text-white">
+            Size
+          </label>
           <div className="flex items-center">
             <input
               type="range"
@@ -306,21 +325,19 @@ export default function DrawingCanvas() {
           {/* Botón para limpiar */}
           <button
             onClick={clearCanvas}
-            className="flex flex-col items-center p-2 rounded-lg bg-red-500 hover:bg-red-600 text-white transition-colors"
+            className="p-2 rounded-lg bg-red-500 hover:bg-red-600 text-white transition-colors"
             title="Limpiar lienzo"
           >
             <FaTrash size={24} />
-            <span className="text-xs mt-1 hidden sm:block">Limpiar</span>
           </button>
 
           {/* Botón para descargar */}
           <button
             onClick={downloadCanvas}
-            className="flex flex-col items-center p-2 rounded-lg bg-green-600 hover:bg-green-700 text-white transition-colors"
+            className=" p-2 rounded-lg bg-green-600 hover:bg-green-700 text-white transition-colors"
             title="Descargar dibujo"
           >
             <FaDownload size={24} />
-            <span className="text-xs mt-1 hidden sm:block">Descargar</span>
           </button>
         </div>
       </div>
@@ -329,8 +346,8 @@ export default function DrawingCanvas() {
       <div className="w-full max-w-4xl flex justify-center">
         <canvas
           ref={canvasRef}
-          width={CANVAS_WIDTH}
-          height={CANVAS_HEIGHT}
+          width={1920}
+          height={1080}
           onMouseDown={startDrawing}
           onMouseMove={draw}
           onMouseUp={endDrawing}
@@ -350,13 +367,10 @@ export default function DrawingCanvas() {
 
       {/* Indicador de herramienta activa */}
       <div className="mt-4 text-center">
-        <p className="text-sm md:text-base">
-          Herramienta actual:{" "}
-          <span className="capitalize px-2 py-1 bg-blue-100 rounded">
-            {tool === "brush" && "Pincel"}
-            {tool === "marker" && "Marcador"}
-            {tool === "spray" && "Spray"}
-            {tool === "eraser" && "Borrador"}
+        <p className="text-sm md:text-base text-white font-bold">
+          Current tool:{" "}
+          <span className="capitalize px-2 py-1 bg-blue-100 text-black rounded">
+            {tool}
           </span>
         </p>
       </div>

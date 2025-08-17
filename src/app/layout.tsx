@@ -20,7 +20,6 @@ export const metadata: Metadata = {
 
 export const viewport = {
   width: "device-width",
-
   userScalable: true,
 };
 
@@ -32,7 +31,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-[url(/img/paint-art-bg.webp)] bg-cover`}
       >
         {children}
       </body>
