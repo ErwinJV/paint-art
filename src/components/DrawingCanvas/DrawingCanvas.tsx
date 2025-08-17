@@ -55,7 +55,7 @@ export default function DrawingCanvas() {
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     contextRef.current = ctx;
-  }, []);
+  }, [brushSize, color]);
 
   // Actualizar propiedades al cambiar config
   useEffect(() => {
