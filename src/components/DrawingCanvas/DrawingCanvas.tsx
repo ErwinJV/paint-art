@@ -55,7 +55,8 @@ export default function DrawingCanvas() {
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     contextRef.current = ctx;
-  }, [brushSize, color]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Actualizar propiedades al cambiar config
   useEffect(() => {
@@ -68,7 +69,7 @@ export default function DrawingCanvas() {
     }
 
     contextRef.current.lineWidth = brushSize;
-  }, [color, brushSize, tool]);
+  }, [brushSize, color, tool]);
 
   // Función para obtener coordenadas
   const getCoordinates = (
@@ -144,8 +145,38 @@ export default function DrawingCanvas() {
   const drawBrush = (x: number, y: number) => {
     if (!contextRef.current) return;
 
-    contextRef.current.lineTo(x, y);
-    contextRef.current.stroke();
+    const ctx = contextRef.current;
+    const currentX = x;
+    const currentY = y;
+
+    // Guardar configuración previa
+    const prevStrokeStyle = ctx.strokeStyle;
+    const prevLineWidth = ctx.lineWidth;
+
+    // Crear gradiente radial para efecto de pincel suave
+    const gradient = ctx.createRadialGradient(
+      currentX,
+      currentY,
+      0,
+      currentX,
+      currentY,
+      brushSize
+    );
+    gradient.addColorStop(0, `${color}cc`); // 80% de opacidad
+    gradient.addColorStop(0.5, `${color}99`); // 60% de opacidad
+    gradient.addColorStop(1, `${color}00`); // 0% de opacidad
+
+    // Configurar propiedades de dibujo
+    ctx.strokeStyle = gradient;
+    ctx.lineWidth = brushSize * 1.5; // Ligeramente más ancho para el gradiente
+
+    // Dibujar
+    ctx.lineTo(currentX, currentY);
+    ctx.stroke();
+
+    // Restaurar configuración
+    ctx.strokeStyle = prevStrokeStyle;
+    ctx.lineWidth = prevLineWidth;
   };
 
   const drawMarker = (x: number, y: number) => {
@@ -303,7 +334,7 @@ export default function DrawingCanvas() {
         </div>
 
         {/* Tamaño del trazo */}
-        <div className="flex flex-col items-center">
+        <div className="flex flex-col items-center font-bold">
           <label className="text-xs md:text-sm mb-1 font-medium text-white">
             Size
           </label>
@@ -316,7 +347,9 @@ export default function DrawingCanvas() {
               onChange={(e) => setBrushSize(parseInt(e.target.value))}
               className="w-24 md:w-32"
             />
-            <span className="ml-2 w-6 text-sm md:text-base">{brushSize}</span>
+            <span className="ml-2 w-6 text-sm md:text-base text-white">
+              {brushSize}
+            </span>
           </div>
         </div>
 
@@ -326,7 +359,7 @@ export default function DrawingCanvas() {
           <button
             onClick={clearCanvas}
             className="p-2 rounded-lg bg-red-500 hover:bg-red-600 text-white transition-colors"
-            title="Limpiar lienzo"
+            title="Clear canvas"
           >
             <FaTrash size={24} />
           </button>
@@ -335,7 +368,7 @@ export default function DrawingCanvas() {
           <button
             onClick={downloadCanvas}
             className=" p-2 rounded-lg bg-green-600 hover:bg-green-700 text-white transition-colors"
-            title="Descargar dibujo"
+            title="Download drawing"
           >
             <FaDownload size={24} />
           </button>
