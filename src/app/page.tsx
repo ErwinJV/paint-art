@@ -2,7 +2,9 @@ import DrawingCanvas from "@/components/DrawingCanvas";
 
 export default function Home() {
   return (
-    <main>
+    <main className="flex min-h-screen flex-col items-center justify-center  bg-black/35">
+      <h1 className="text-3xl font-bold text-white ">Paint Art</h1>
+      <h3 className="text-xl font-bold text-white ">Draw your thoughts!</h3>
       <DrawingCanvas />
     </main>
   );
