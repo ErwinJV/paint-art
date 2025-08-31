@@ -25,7 +25,7 @@ const CANVAS_WIDTH = 854;
 const CANVAS_HEIGHT = 480;
 
 export default function DrawingCanvas() {
-  const [blockScroll] = useScrollLock();
+  const [blockScroll, allowScroll] = useScrollLock();
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const contextRef = useRef<CanvasRenderingContext2D | null>(null);
@@ -74,10 +74,6 @@ export default function DrawingCanvas() {
     contextRef.current.lineWidth = brushSize;
   }, [brushSize, color, tool]);
 
-  useEffect(() => {
-    blockScroll();
-  }, [blockScroll]);
-
   // Función para obtener coordenadas
   const getCoordinates = (
     e: MouseEvent<HTMLCanvasElement> | TouchEvent<HTMLCanvasElement>
@@ -114,6 +110,7 @@ export default function DrawingCanvas() {
     contextRef.current.beginPath();
     contextRef.current.moveTo(offsetX, offsetY);
     setIsDrawing(true);
+    blockScroll();
   };
 
   const draw = (
@@ -146,6 +143,7 @@ export default function DrawingCanvas() {
 
     contextRef.current.closePath();
     setIsDrawing(false);
+    allowScroll();
   };
 
   // Funciones específicas de herramientas
