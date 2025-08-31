@@ -31,7 +31,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-[url(/img/paint-art-bg.webp)] bg-cover`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased  bg-[url(/img/paint-art-bg.webp)] bg-cover bg-no-repeat`}
       >
         {children}
       </body>

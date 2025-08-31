@@ -1,4 +1,5 @@
 "use client";
+import { useScrollLock } from "@/hooks/use-scroll-lock";
 import {
   useState,
   useRef,
@@ -24,6 +25,8 @@ const CANVAS_WIDTH = 854;
 const CANVAS_HEIGHT = 480;
 
 export default function DrawingCanvas() {
+  const [blockScroll] = useScrollLock();
+
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const contextRef = useRef<CanvasRenderingContext2D | null>(null);
 
@@ -70,6 +73,10 @@ export default function DrawingCanvas() {
 
     contextRef.current.lineWidth = brushSize;
   }, [brushSize, color, tool]);
+
+  useEffect(() => {
+    blockScroll();
+  }, [blockScroll]);
 
   // Función para obtener coordenadas
   const getCoordinates = (
